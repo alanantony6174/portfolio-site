@@ -52,6 +52,32 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #646cff;
+  transition: width 0.3s ease, left 0.3s ease;
+}
+.nav-link:hover::after,
+.nav-link.active::after {
+  width: 100%;
+  left: 0;
+}
+
+.contact-icon {
+  transition: transform 0.2s;
+}
+.contact-icon:hover {
+  transform: scale(1.1);
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
