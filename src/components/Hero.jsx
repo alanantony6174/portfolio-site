@@ -1,6 +1,6 @@
 // src/components/Hero.jsx
 
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, Suspense } from 'react'
 import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
 import {
@@ -8,13 +8,16 @@ import {
   PresentationControls,
   Float,
   useGLTF,
-  useAnimations
+  useAnimations,
+  Html
 } from '@react-three/drei'
 import Particles from 'react-tsparticles'
 import { loadFull } from 'tsparticles'
 import { Link } from 'react-scroll'
 
-// Robot loader — plays baked animations, auto‐rotates, positioned lower
+// Preload the GLB so there's no flash when you navigate back
+useGLTF.preload('/robot_model.glb')
+
 function RobotModel({ scale = 1.25, position = [0, -1.75, 0] }) {
   const { scene, animations } = useGLTF('/robot_model.glb')
   const ref = useRef()
@@ -22,7 +25,7 @@ function RobotModel({ scale = 1.25, position = [0, -1.75, 0] }) {
 
   useEffect(() => {
     if (actions) {
-      Object.values(actions).forEach(action => {
+      Object.values(actions).forEach((action) => {
         action.reset().fadeIn(0.5).play().setLoop(THREE.LoopRepeat, Infinity)
       })
     }
@@ -36,13 +39,15 @@ function RobotModel({ scale = 1.25, position = [0, -1.75, 0] }) {
 }
 
 export default function Hero() {
-  const particlesInit = async engine => {
+  // init particles engine
+  const particlesInit = async (engine) => {
     await loadFull(engine)
   }
 
+  // parallax scroll effect
   useEffect(() => {
     const onScroll = () => {
-      document.querySelectorAll('.parallax-layer').forEach(el => {
+      document.querySelectorAll('.parallax-layer').forEach((el) => {
         const speed = parseFloat(el.dataset.speed)
         el.style.transform = `translateY(${window.scrollY * speed}px)`
       })
@@ -53,7 +58,7 @@ export default function Hero() {
 
   return (
     <section id="home" className="relative w-screen h-screen overflow-hidden">
-      {/* Parallax SVG */}
+      {/* 1) Parallax SVG Background */}
       <div className="absolute inset-0 pointer-events-none">
         <svg
           className="w-full h-full"
@@ -67,12 +72,26 @@ export default function Hero() {
             </linearGradient>
           </defs>
           <rect width="100%" height="100%" fill="url(#grad)" />
-          <circle className="parallax-layer" data-speed="0.2" cx="20%" cy="30%" r="200" fill="#1a1a1a" />
-          <circle className="parallax-layer" data-speed="0.4" cx="80%" cy="70%" r="150" fill="#343434" />
+          <circle
+            className="parallax-layer"
+            data-speed="0.2"
+            cx="20%"
+            cy="30%"
+            r="200"
+            fill="#1a1a1a"
+          />
+          <circle
+            className="parallax-layer"
+            data-speed="0.4"
+            cx="80%"
+            cy="70%"
+            r="150"
+            fill="#343434"
+          />
         </svg>
       </div>
 
-      {/* Particle Overlay */}
+      {/* 2) Particle Network Overlay */}
       <Particles
         init={particlesInit}
         options={{
@@ -89,35 +108,36 @@ export default function Hero() {
         className="absolute inset-0 z-0 pointer-events-none"
       />
 
-      {/* 3D Canvas */}
-      <div className="absolute inset-0 z-0">
-        <Canvas className="w-full h-full" camera={{ position: [0, 0, 7], fov: 50 }}>
-          <ambientLight intensity={0.5} />
-          <directionalLight position={[5, 5, 5]} intensity={1} />
+      {/* 3) 3D Canvas with Suspense */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Suspense fallback={<Html center>Loading 3D...</Html>}>
+          <Canvas camera={{ position: [0, 0, 7], fov: 50 }}>
+            <ambientLight intensity={0.5} />
+            <directionalLight position={[5, 5, 5]} intensity={1} />
 
-          <PresentationControls
-            global
-            config={{ mass: 1, tension: 170, friction: 26 }}
-            snap={{ mass: 2, tension: 400, friction: 40 }}
-          >
-            <Float speed={1.5} rotationIntensity={0.6} floatIntensity={1.2}>
-              <RobotModel />
-            </Float>
-          </PresentationControls>
+            <PresentationControls
+              global
+              config={{ mass: 1, tension: 170, friction: 26 }}
+              snap={{ mass: 2, tension: 400, friction: 40 }}
+            >
+              <Float speed={1.5} rotationIntensity={0.6} floatIntensity={1.2}>
+                <RobotModel />
+              </Float>
+            </PresentationControls>
 
-          <OrbitControls enableZoom={false} />
-        </Canvas>
+            <OrbitControls enableZoom={false} />
+          </Canvas>
+        </Suspense>
       </div>
 
-      {/* Overlay Text & Buttons, centered below top */}
-      <div className="absolute inset-x-0 top-16 flex flex-col items-center text-center space-y-4 px-4 z-15">
+      {/* 4) Foreground Text & Buttons */}
+      <div className="absolute inset-x-0 top-16 flex flex-col items-center text-center space-y-4 px-4 z-20">
         <h1 className="text-4xl md:text-5xl font-bold text-white">
           Hello, I’m Alan Antony 👋
         </h1>
         <p className="text-lg md:text-xl text-gray-200">
           Robotics Engineer | AMR · ROS 2 · Embedded Systems
         </p>
-
         <div className="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
           <Link
             to="projects"
