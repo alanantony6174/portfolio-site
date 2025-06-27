@@ -1,10 +1,19 @@
-function App() {
-  return (
-    <div>
-      <h1>Hello, I'm Alan Antony 👋</h1>
-      <p>Welcome to my portfolio site!</p>
-    </div>
-  );
-}
+import Navbar from './components/Navbar'
+import Hero from './components/Hero'
+import About from './components/About'
+import Projects from './components/Projects'
+import Contact from './components/Contact'
 
-export default App;
+export default function App() {
+  return (
+    <>
+      <Navbar />
+      <main className="pt-16">
+        <Hero />
+        <About />
+        <Projects />
+        <Contact />
+      </main>
+    </>
+  )
+}
