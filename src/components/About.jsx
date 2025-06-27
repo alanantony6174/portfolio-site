@@ -1,12 +1,13 @@
 export default function About() {
   return (
-    <section id="about" className="py-20 bg-gray-100 text-gray-800">
-      <div className="max-w-3xl mx-auto space-y-6">
-        <h2 className="text-4xl font-semibold text-center">My Journey</h2>
-        <p>
-          I began building AMRs in 2024, focusing on outdoor navigation...
+    <section id="about" className="w-screen py-20 bg-white text-gray-900">
+      <div className="max-w-4xl mx-auto px-4">
+        <h2 className="text-4xl font-semibold mb-4">About Me</h2>
+        <p className="text-lg leading-relaxed">
+          I’m a Robotics Engineer specializing in autonomous mobile robots and embedded systems.
+          I hold a B.E. in Robotics and Automation from Dhanalakshmi Srinivasan Engineering College
+          (Anna University), graduating in 2023 with a CGPA of 8.68.
         </p>
-        {/* You can turn this into a timeline with flexboxes or a third-party component */}
       </div>
     </section>
   );
