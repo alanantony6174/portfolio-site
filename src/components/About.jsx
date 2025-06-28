@@ -34,6 +34,10 @@ export default function About() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [isMobile])
 
+  // Common motion settings
+  const fadeInLeft = { initial: { opacity: 0, x: -50 }, whileInView: { opacity: 1, x: 0 }, transition: { duration: 0.6 }, viewport: { once: true } }
+  const fadeInRight = { initial: { opacity: 0, x: 50 }, whileInView: { opacity: 1, x: 0 }, transition: { duration: 0.6, delay: 0.2 }, viewport: { once: true } }
+
   return (
     <section id="about" className="relative w-screen py-20 bg-white overflow-hidden">
       {!isMobile && (
@@ -48,7 +52,7 @@ export default function About() {
             </defs>
             <rect width="100%" height="100%" fill="url(#aboutGrad)" />
             <circle
-              className="about-parallax"
+              className="about-parallax floating"
               data-speed="0.2"
               cx="30%"
               cy="20%"
@@ -56,7 +60,7 @@ export default function About() {
               fill="#f0f0f0"
             />
             <circle
-              className="about-parallax"
+              className="about-parallax floating"
               data-speed="0.4"
               cx="80%"
               cy="80%"
@@ -70,19 +74,15 @@ export default function About() {
       <div className="relative z-10 max-w-4xl mx-auto px-4 flex flex-col md:flex-row items-center">
         {/* Portrait */}
         {isMobile ? (
-          <img
-            src="/alan.png"
-            alt="Alan Antony"
-            className="w-40 h-40 rounded-full object-cover mb-6 mx-auto shadow-lg"
-          />
+          <motion.div {...fadeInLeft} className="w-40 h-40 mb-6 mx-auto">
+            <img
+              src="/alan.png"
+              alt="Alan Antony"
+              className="w-full h-full rounded-full object-cover shadow-lg"
+            />
+          </motion.div>
         ) : (
-          <motion.div
-            className="w-48 h-48 md:w-64 md:h-64 mb-6 md:mb-0 md:mr-8"
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
+          <motion.div {...fadeInLeft} className="w-48 h-48 md:w-64 md:h-64 mb-6 md:mb-0 md:mr-8">
             <Tilt
               glareEnable
               glareMaxOpacity={0.25}
@@ -100,46 +100,41 @@ export default function About() {
         )}
 
         {/* Text */}
-        <div className="flex-1 text-gray-900 text-center md:text-left">
-          {isMobile ? (
-            <>
-              <h2 className="text-3xl font-semibold mb-2">About Me</h2>
-              <p className="text-base leading-relaxed mb-4">
-                I’m a Robotics Engineer specializing in autonomous mobile robots and embedded systems. I hold a B.E. in Robotics and Automation from Dhanalakshmi Srinivasan Engineering College (Anna University), graduating in 2023 with a CGPA of 8.68.
-              </p>
-              <Link
-                to="projects"
-                smooth
-                duration={500}
-                className="inline-block px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
-              >
-                Discover My Projects
-              </Link>
-            </>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
+        {isMobile ? (
+          <motion.div {...fadeInRight} className="flex-1 text-center md:text-left text-gray-900">
+            <h2 className="text-3xl font-semibold mb-2">About Me</h2>
+            <p className="text-base leading-relaxed mb-4">
+              I’m a Robotics Engineer specializing in autonomous mobile robots and embedded systems.
+              I hold a B.E. in Robotics and Automation from Dhanalakshmi Srinivasan Engineering College
+              (Anna University), graduating in 2023 with a CGPA of 8.68.
+            </p>
+            <Link
+              to="projects"
+              smooth
+              duration={500}
+              className="inline-block px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
             >
-              <h2 className="text-4xl font-semibold mb-4">About Me</h2>
-              <p className="text-lg leading-relaxed mb-4">
-                I’m a Robotics Engineer specializing in autonomous mobile robots and embedded systems.
-                I hold a B.E. in Robotics and Automation from Dhanalakshmi Srinivasan Engineering College
-                (Anna University), graduating in 2023 with a CGPA of 8.68.
-              </p>
-              <Link
-                to="projects"
-                smooth
-                duration={500}
-                className="inline-block px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
-              >
-                Discover My Projects
-              </Link>
-            </motion.div>
-          )}
-        </div>
+              Discover My Projects
+            </Link>
+          </motion.div>
+        ) : (
+          <motion.div {...fadeInRight} className="flex-1 text-gray-900">
+            <h2 className="text-4xl font-semibold mb-4">About Me</h2>
+            <p className="text-lg leading-relaxed mb-4">
+              I’m a Robotics Engineer specializing in autonomous mobile robots and embedded systems.
+              I hold a B.E. in Robotics and Automation from Dhanalakshmi Srinivasan Engineering College
+              (Anna University), graduating in 2023 with a CGPA of 8.68.
+            </p>
+            <Link
+              to="projects"
+              smooth
+              duration={500}
+              className="inline-block px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
+            >
+              Discover My Projects
+            </Link>
+          </motion.div>
+        )}
       </div>
     </section>
   )

@@ -6,7 +6,6 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
 
-  // Change background on scroll
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 50)
     window.addEventListener('scroll', onScroll)
@@ -24,12 +23,13 @@ export default function Navbar() {
   return (
     <header
       className={`
-        fixed w-full z-20 transition-colors duration-300
+        fixed w-full top-0 left-0 right-0
+        transition-colors duration-300
         ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}
+        z-50
       `}
     >
       <div className="container mx-auto flex items-center justify-between p-4">
-        {/* Brand / Logo */}
         <div className="text-2xl font-bold text-indigo-600">Alan Antony</div>
 
         {/* Desktop Nav */}
@@ -38,11 +38,11 @@ export default function Navbar() {
             <Link
               key={id}
               to={id}
-              smooth={true}
+              smooth
               duration={500}
-              spy={true}
-              offset={-64}              // account for header height
-              activeClass="active text-indigo-400"
+              spy
+              offset={-64}
+              activeClass="text-indigo-400 underline"
               className="nav-link text-black cursor-pointer"
             >
               {label}
@@ -50,7 +50,7 @@ export default function Navbar() {
           ))}
         </nav>
 
-        {/* Mobile Hamburger */}
+        {/* Hamburger */}
         <button
           className="md:hidden text-2xl text-black"
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -60,12 +60,13 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Slide-Down Menu */}
+      {/* Mobile Menu */}
       <nav
         className={`
           md:hidden bg-white
           ${mobileOpen ? 'max-h-screen' : 'max-h-0'} overflow-hidden
           transition-max-height duration-500
+          z-50
         `}
       >
         <ul className="flex flex-col items-center space-y-4 py-6">
@@ -73,11 +74,11 @@ export default function Navbar() {
             <Link
               key={id}
               to={id}
-              smooth={true}
+              smooth
               duration={500}
-              spy={true}
+              spy
               offset={-64}
-              activeClass="active text-indigo-400"
+              activeClass="text-indigo-400 underline"
               className="nav-link text-black text-xl"
               onClick={() => setMobileOpen(false)}
             >

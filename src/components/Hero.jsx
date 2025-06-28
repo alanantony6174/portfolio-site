@@ -1,6 +1,6 @@
 // src/components/Hero.jsx
 
-import React, { useRef, useEffect, Suspense } from 'react'
+import React, { useEffect, Suspense, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
 import {
@@ -9,56 +9,81 @@ import {
   Float,
   useGLTF,
   useAnimations,
-  Html
+  Html,
+  PerformanceMonitor
 } from '@react-three/drei'
 import Particles from 'react-tsparticles'
 import { loadFull } from 'tsparticles'
 import { Link } from 'react-scroll'
 
-// Preload the GLB so there's no flash when you navigate back
-useGLTF.preload('/robot_model.glb')
+// Immediately detect mobile on every load
+const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
 
-function RobotModel({ scale = 1.25, position = [0, -1.75, 0] }) {
-  const { scene, animations } = useGLTF('/robot_model.glb')
+// Model URLs in /public
+const DESKTOP_MODEL = '/robot_model.glb'
+const MOBILE_MODEL  = '/robot_model_compressed.glb'
+
+function RobotModel({ src, ...props }) {
+  const { scene, animations } = useGLTF(src)
   const ref = useRef()
   const { actions } = useAnimations(animations, ref)
 
+  // Start animations once loaded
   useEffect(() => {
     if (actions) {
-      Object.values(actions).forEach((action) => {
-        action.reset().fadeIn(0.5).play().setLoop(THREE.LoopRepeat, Infinity)
-      })
+      Object.values(actions).forEach((a) =>
+        a.reset().fadeIn(0.5).play().setLoop(THREE.LoopRepeat, Infinity)
+      )
     }
   }, [actions])
 
+  // Continuous slow rotation
   useFrame((_, delta) => {
     if (ref.current) ref.current.rotation.y += delta * 0.2
   })
 
-  return <primitive ref={ref} object={scene} scale={scale} position={position} />
+  return <primitive ref={ref} object={scene} {...props} />
 }
 
 export default function Hero() {
-  // init particles engine
-  const particlesInit = async (engine) => {
-    await loadFull(engine)
-  }
-
-  // parallax scroll effect
+  // Choose and preload only the correct model
+  const modelSrc = isMobile ? MOBILE_MODEL : DESKTOP_MODEL
   useEffect(() => {
-    const onScroll = () => {
+    useGLTF.preload(modelSrc)
+  }, [modelSrc])
+
+  // Dynamic device pixel ratio
+  const [dpr, setDpr] = useState(window.devicePixelRatio || 1)
+
+  // Parallax scroll only on desktop
+  useEffect(() => {
+    if (isMobile) return
+    const onScroll = () =>
       document.querySelectorAll('.parallax-layer').forEach((el) => {
-        const speed = parseFloat(el.dataset.speed)
+        const speed = parseFloat(el.dataset.speed) || 0
         el.style.transform = `translateY(${window.scrollY * speed}px)`
       })
-    }
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Particle settings (lighter on mobile)
+  const particlesInit = async (engine) => await loadFull(engine)
+  const particleOpts = {
+    fullScreen: { enable: false },
+    background: { color: 'transparent' },
+    particles: {
+      number: { value: isMobile ? 20 : 60 },
+      links: { enable: true, color: '#646cff', distance: isMobile ? 80 : 120 },
+      move: { speed: isMobile ? 0.3 : 1 },
+      size: { value: isMobile ? 2 : 3 },
+      color: { value: '#646cff' },
+    },
+  }
+
   return (
     <section id="home" className="relative w-screen h-screen overflow-hidden">
-      {/* 1) Parallax SVG Background */}
+      {/* 1) SVG Parallax + Floating */}
       <div className="absolute inset-0 pointer-events-none">
         <svg
           className="w-full h-full"
@@ -73,7 +98,7 @@ export default function Hero() {
           </defs>
           <rect width="100%" height="100%" fill="url(#grad)" />
           <circle
-            className="parallax-layer"
+            className="parallax-layer floating"
             data-speed="0.2"
             cx="20%"
             cy="30%"
@@ -81,7 +106,7 @@ export default function Hero() {
             fill="#1a1a1a"
           />
           <circle
-            className="parallax-layer"
+            className="parallax-layer floating"
             data-speed="0.4"
             cx="80%"
             cy="70%"
@@ -91,43 +116,55 @@ export default function Hero() {
         </svg>
       </div>
 
-      {/* 2) Particle Network Overlay */}
+      {/* 2) Particle Network */}
       <Particles
         init={particlesInit}
-        options={{
-          fullScreen: { enable: false },
-          background: { color: 'transparent' },
-          particles: {
-            number: { value: 60 },
-            color: { value: '#646cff' },
-            links: { enable: true, color: '#646cff' },
-            move: { speed: 1 },
-            size: { value: 3 },
-          },
-        }}
+        options={particleOpts}
         className="absolute inset-0 z-0 pointer-events-none"
       />
 
-      {/* 3) 3D Canvas with Suspense */}
+      {/* 3) 3D Canvas with inline Suspense */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <Suspense fallback={<Html center>Loading 3D...</Html>}>
-          <Canvas camera={{ position: [0, 0, 7], fov: 50 }}>
-            <ambientLight intensity={0.5} />
-            <directionalLight position={[5, 5, 5]} intensity={1} />
+        <Canvas dpr={dpr} camera={{ position: [0, 0, 7], fov: 50 }}>
+          {/* Dynamically tune DPR for performance */}
+          <PerformanceMonitor
+            onChange={({ factor }) => {
+              const minDpr = isMobile ? 0.5 : 0.75
+              const maxDpr = window.devicePixelRatio || 1
+              const val = minDpr + (maxDpr - minDpr) * factor
+              setDpr(Math.round(val * 100) / 100)
+            }}
+          />
 
-            <PresentationControls
-              global
-              config={{ mass: 1, tension: 170, friction: 26 }}
-              snap={{ mass: 2, tension: 400, friction: 40 }}
-            >
-              <Float speed={1.5} rotationIntensity={0.6} floatIntensity={1.2}>
-                <RobotModel />
+          <ambientLight intensity={0.5} />
+          <directionalLight position={[5, 5, 5]} intensity={1} />
+
+          <Suspense fallback={
+            // Simple mesh fallback *inside* canvas
+            <mesh>
+              <boxGeometry args={[1, 1, 1]} />
+              <meshBasicMaterial color="#646cff" wireframe />
+            </mesh>
+          }>
+            {isMobile ? (
+              <Float speed={1} rotationIntensity={0.3} floatIntensity={0.6}>
+                <RobotModel src={modelSrc} scale={1} position={[0, -1.2, 0]} />
               </Float>
-            </PresentationControls>
+            ) : (
+              <PresentationControls
+                global
+                config={{ mass: 1, tension: 170, friction: 26 }}
+                snap={{ mass: 2, tension: 400, friction: 40 }}
+              >
+                <Float speed={1.5} rotationIntensity={0.6} floatIntensity={1.2}>
+                  <RobotModel src={modelSrc} scale={1.25} position={[0, -1.75, 0]} />
+                </Float>
+              </PresentationControls>
+            )}
+          </Suspense>
 
-            <OrbitControls enableZoom={false} />
-          </Canvas>
-        </Suspense>
+          <OrbitControls enableZoom={!isMobile} />
+        </Canvas>
       </div>
 
       {/* 4) Foreground Text & Buttons */}
@@ -138,21 +175,11 @@ export default function Hero() {
         <p className="text-lg md:text-xl text-gray-200">
           Robotics Engineer | AMR · ROS 2 · Embedded Systems
         </p>
-        <div className="flex flex-col md:flex-row md:space-x-4 space-y-2 md:space-y-0">
-          <Link
-            to="projects"
-            smooth
-            duration={500}
-            className="px-6 py-2 bg-white text-indigo-600 rounded-md hover:bg-gray-100 transition"
-          >
-            View My Projects
+        <div className="flex space-x-4">
+          <Link to="projects" smooth duration={500} className="px-6 py-2 bg-white text-indigo-600 rounded-md hover:bg-gray-100 transition">
+            View Projects
           </Link>
-          <Link
-            to="experience"
-            smooth
-            duration={500}
-            className="px-6 py-2 bg-white text-indigo-600 rounded-md hover:bg-gray-100 transition"
-          >
+          <Link to="experience" smooth duration={500} className="px-6 py-2 bg-white text-indigo-600 rounded-md hover:bg-gray-100 transition">
             My Journey
           </Link>
         </div>
