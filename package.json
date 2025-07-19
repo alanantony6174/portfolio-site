@@ -11,6 +11,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@chatscope/chat-ui-kit-react": "^2.1.1",
+    "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "@react-three/drei": "^10.3.0",
     "@react-three/fiber": "^9.1.2",
     "framer-motion": "^12.19.2",

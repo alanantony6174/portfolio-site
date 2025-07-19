@@ -1,3 +1,4 @@
+// src/App.jsx
 import React from 'react'
 import useIsMobile    from './hooks/useIsMobile'
 import ScrollDragger  from './components/ScrollDragger'
@@ -7,6 +8,7 @@ import About          from './components/About'
 import Experience     from './components/Experience'
 import Projects       from './components/Projects'
 import Contact        from './components/Contact'
+import Chatbot        from './components/Chatbot'
 
 export default function App() {
   const isMobile = useIsMobile()
@@ -21,6 +23,7 @@ export default function App() {
         <Contact />
       </main>
       {isMobile && <ScrollDragger />}
+      <Chatbot />
     </>
   )
 }
