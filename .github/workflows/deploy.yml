@@ -1,3 +1,5 @@
+# .github/workflows/deploy.yml
+
 name: Deploy to GitHub Pages
 
 on:
@@ -10,6 +12,8 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      VITE_GEMINI_API_KEY: ${{ secrets.VITE_GEMINI_API_KEY }}
 
     steps:
       - name: Checkout source
