@@ -40,7 +40,7 @@ const skillCategories = [
 
 const Skills = () => {
     return (
-        <Section id="skills" className="bg-gray-50">
+        <Section id="skills" className="bg-transparent">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}

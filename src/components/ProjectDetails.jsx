@@ -60,7 +60,7 @@ const ProjectDetails = () => {
     }
 
     return (
-        <div className="pt-24 pb-12 min-h-screen bg-white">
+        <div className="pt-24 pb-12 min-h-screen bg-white/90 backdrop-blur-sm">
             <div className="container mx-auto px-4 max-w-4xl">
                 <Link to="/" className="inline-block mb-8 text-gray-600 hover:text-black transition-colors">
                     &larr; Back to Projects

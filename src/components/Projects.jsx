@@ -40,7 +40,7 @@ const projects = [
 
 const Projects = () => {
   return (
-    <Section id="projects" className="bg-white">
+    <Section id="projects" className="bg-transparent">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

@@ -6,7 +6,7 @@ import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope } from 'react-icons/fa';
 
 const Contact = () => {
   return (
-    <Section id="contact" className="bg-white">
+    <Section id="contact" className="bg-transparent">
       <div className="grid md:grid-cols-2 gap-12">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
