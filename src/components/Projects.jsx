@@ -1,39 +1,70 @@
+import React from 'react';
+import Section from './Section';
+import ProjectCard from './ProjectCard';
+import { motion } from 'framer-motion';
+
 const projects = [
   {
-    title: "Disability Assistance Device",
-    desc: "IOT & Computer Vision device in collaboration with Higbec Pvt. Ltd (2023).",
+    title: "E-Commerce Dashboard",
+    description: "A comprehensive dashboard for managing online stores, featuring real-time analytics, inventory management, and order processing.",
+    tags: ["React", "Tailwind", "Node.js"],
+    image: null, // Placeholder
     link: "#"
   },
   {
-    title: "Inspection Robot Arm",
-    desc: "Two-segment continuum mechanism prototype; paper published in IJARSCT (2022).",
+    title: "Social Media App",
+    description: "A mobile-first social platform focused on photo sharing and community building. Includes real-time chat and notifications.",
+    tags: ["React Native", "Firebase", "Redux"],
+    image: null, // Placeholder
     link: "#"
   },
   {
-    title: "Cross-Spherical Gear Robotic Arm",
-    desc: "SolidWorks CAD design for advanced motion with simple construction (2021).",
+    title: "Task Management Tool",
+    description: "A productivity application helping teams organize tasks, track progress, and collaborate effectively.",
+    tags: ["Vue.js", "Express", "MongoDB"],
+    image: null, // Placeholder
+    link: "#"
+  },
+  {
+    title: "Portfolio Website v1",
+    description: "My previous portfolio website showcasing my early work and development journey.",
+    tags: ["HTML", "CSS", "JavaScript"],
+    image: null, // Placeholder
     link: "#"
   }
 ];
 
-export default function Projects() {
+const Projects = () => {
   return (
-    <section id="projects" className="w-screen py-20 bg-white text-gray-900">
-      <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-4xl font-semibold mb-12">Projects</h2>
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((p) => (
-            <a
-              key={p.title}
-              href={p.link}
-              className="block p-6 border rounded-lg hover:shadow-lg transition"
-            >
-              <h3 className="text-2xl font-bold mb-2">{p.title}</h3>
-              <p className="text-lg">{p.desc}</p>
-            </a>
-          ))}
-        </div>
+    <Section id="projects" className="bg-white">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="mb-12"
+      >
+        <h2 className="text-3xl font-bold mb-4">Selected Work</h2>
+        <p className="text-gray-600 max-w-2xl">
+          Here are some of the projects I've worked on recently. Each one presented unique challenges and learning opportunities.
+        </p>
+      </motion.div>
+
+      <div className="grid md:grid-cols-2 gap-8">
+        {projects.map((project, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+          >
+            <ProjectCard {...project} />
+          </motion.div>
+        ))}
       </div>
-    </section>
+    </Section>
   );
-}
+};
+
+export default Projects;

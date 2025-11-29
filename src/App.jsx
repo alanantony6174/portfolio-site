@@ -1,29 +1,26 @@
-// src/App.jsx
-import React from 'react'
-import useIsMobile    from './hooks/useIsMobile'
-import ScrollDragger  from './components/ScrollDragger'
-import Navbar         from './components/Navbar'
-import Hero           from './components/Hero'
-import About          from './components/About'
-import Experience     from './components/Experience'
-import Projects       from './components/Projects'
-import Contact        from './components/Contact'
-import Chatbot        from './components/Chatbot'
+import React from 'react';
+import Section from './components/Section';
+import Hero from './components/Hero';
+import About from './components/About';
+import Projects from './components/Projects';
+import Skills from './components/Skills';
+import Contact from './components/Contact';
+import Footer from './components/Footer';
 
-export default function App() {
-  const isMobile = useIsMobile()
+function App() {
   return (
-    <>
-      <Navbar />
-      <main className="pt-16">
+    <div className="min-h-screen bg-white text-gray-900 font-sans">
+      <main>
         <Hero />
         <About />
-        <Experience />
         <Projects />
+        <Skills />
         <Contact />
       </main>
-      {isMobile && <ScrollDragger />}
-      <Chatbot />
-    </>
-  )
+      <Footer />
+    </div>
+  );
 }
+
+export default App;
+
