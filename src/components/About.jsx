@@ -29,15 +29,19 @@ const About = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <h2 className="text-3xl font-bold mb-6">About Me</h2>
+          <h2 className="text-3xl font-bold mb-2">About Me</h2>
+          <h3 className="text-xl text-indigo-600 font-medium mb-6">
+            Transforming complex problems into elegant solutions.
+          </h3>
+
           <p className="text-gray-600 mb-6 leading-relaxed">
-            I'm a passionate developer with a keen eye for design. My journey started when I built my first website at 15, and I've been hooked ever since.
+            I'm a software engineer with a passion for building digital products that make a difference. With a background in both design and development, I bring a unique perspective to every project, ensuring that the code is as clean as the user interface.
           </p>
           <p className="text-gray-600 mb-6 leading-relaxed">
-            I specialize in building scalable web applications using modern technologies like React, Node.js, and TypeScript. I believe in writing clean, maintainable code and creating intuitive user experiences.
+            My approach is user-centric and data-driven. I don't just write code; I solve problems. Whether it's optimizing a database query or crafting a pixel-perfect animation, I'm dedicated to delivering excellence.
           </p>
           <p className="text-gray-600 leading-relaxed">
-            When I'm not coding, you can find me exploring new coffee shops, reading about design trends, or contributing to open source projects.
+            When I'm not at my desk, you can find me hiking, experimenting with new cooking recipes, or contributing to the open-source community.
           </p>
         </motion.div>
       </div>

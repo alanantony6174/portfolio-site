@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 
 const projects = [
   {
+    id: "e-commerce-dashboard",
     title: "E-Commerce Dashboard",
     description: "A comprehensive dashboard for managing online stores, featuring real-time analytics, inventory management, and order processing.",
     tags: ["React", "Tailwind", "Node.js"],
@@ -12,6 +13,7 @@ const projects = [
     link: "#"
   },
   {
+    id: "social-media-app",
     title: "Social Media App",
     description: "A mobile-first social platform focused on photo sharing and community building. Includes real-time chat and notifications.",
     tags: ["React Native", "Firebase", "Redux"],
@@ -19,6 +21,7 @@ const projects = [
     link: "#"
   },
   {
+    id: "task-management-tool",
     title: "Task Management Tool",
     description: "A productivity application helping teams organize tasks, track progress, and collaborate effectively.",
     tags: ["Vue.js", "Express", "MongoDB"],
@@ -26,6 +29,7 @@ const projects = [
     link: "#"
   },
   {
+    id: "portfolio-website-v1",
     title: "Portfolio Website v1",
     description: "My previous portfolio website showcasing my early work and development journey.",
     tags: ["HTML", "CSS", "JavaScript"],

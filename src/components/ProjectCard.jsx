@@ -1,11 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
-const ProjectCard = ({ title, description, tags, image, link }) => {
+const ProjectCard = ({ id, title, description, tags, image }) => {
     return (
-        <a
-            href={link}
-            target="_blank"
-            rel="noopener noreferrer"
+        <Link
+            to={`/project/${id}`}
             className="group block bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
         >
             <div className="relative h-64 overflow-hidden bg-gray-100">
@@ -37,7 +36,7 @@ const ProjectCard = ({ title, description, tags, image, link }) => {
                     ))}
                 </div>
             </div>
-        </a>
+        </Link>
     );
 };
 
