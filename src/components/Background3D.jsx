@@ -81,7 +81,8 @@ const GradientShaderMaterial = {
 
 const BackgroundMesh = () => {
     const mesh = useRef();
-    const { viewport, mouse } = useThree();
+    const mouseRef = useRef({ x: 0.5, y: 0.5 });
+    const { viewport } = useThree();
 
     // Create shader material only once
     const shaderMaterial = useMemo(() => {
@@ -92,17 +93,26 @@ const BackgroundMesh = () => {
         });
     }, []);
 
+    React.useEffect(() => {
+        const handleMouseMove = (e) => {
+            // Normalize mouse position to 0..1
+            mouseRef.current = {
+                x: e.clientX / window.innerWidth,
+                y: 1.0 - (e.clientY / window.innerHeight) // Flip Y for shader UVs usually
+            };
+        };
+
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
     useFrame((state) => {
         if (mesh.current) {
             mesh.current.material.uniforms.uTime.value = state.clock.getElapsedTime();
 
             // Smooth mouse interpolation
-            // Convert normalized mouse (-1 to 1) to UV space (0 to 1) approx
-            const targetX = (mouse.x + 1) / 2;
-            const targetY = (mouse.y + 1) / 2;
-
             mesh.current.material.uniforms.uMouse.value.lerp(
-                new THREE.Vector2(targetX, targetY),
+                new THREE.Vector2(mouseRef.current.x, mouseRef.current.y),
                 0.1
             );
         }
